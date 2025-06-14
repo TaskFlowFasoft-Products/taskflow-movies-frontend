@@ -1,0 +1,45 @@
+.emptyContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 2rem;
+    text-align: center;
+    color: #555;
+  }
+  
+  .icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    color: #3a86ff;
+  }
+  
+  h2 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+    color: #222;
+  }
+  
+  p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    max-width: 320px;
+  }
+  
+  .createBtn {
+    background-color: #3a86ff;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .createBtn:hover {
+    background-color: #2f6fe3;
+  }
+  

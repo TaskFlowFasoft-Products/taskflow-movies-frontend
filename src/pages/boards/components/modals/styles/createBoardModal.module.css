@@ -1,0 +1,142 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+  
+  .modalContent {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 420px;
+    animation: fadeIn 0.2s ease-in-out;
+  }
+  
+  .modalTitle {
+    font-size: 1.6rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: -0.5rem;       /* sobe um pouco o título */
+    margin-bottom: 2.5rem;     /* aumenta o espaço abaixo */
+    color: #333;
+  }
+  
+  
+  .formGroup label {
+    display: block;
+    text-align: left;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: #444;
+  }
+  
+  .formGroup label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .formGroup input,
+  .formGroup textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .formGroup input:focus,
+  .formGroup textarea:focus {
+    outline: none;
+    border-color: #3a86ff;
+    box-shadow: 0 0 0 2px rgba(58, 134, 255, 0.2);
+  }
+  
+  .inputError {
+      border-color: #ff4d4f !important;
+      box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.2) !important;
+  }
+  
+  .inputError:focus {
+      border-color: #ff4d4f !important;
+      box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.2) !important;
+  }
+  
+  .errorMessage {
+      color: #ff4d4f;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+      display: block;
+      font-weight: 500;
+  }
+  
+  .formGroup textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  .buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  .createButton,
+  .cancelButton {
+    flex: 1;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .createButton {
+    background-color: #3a86ff;
+    color: white;
+  }
+  
+  .createButton:hover {
+    background-color: #2769d1;
+  }
+  
+  .createButton:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+  }
+  
+  .cancelButton {
+    background-color: #e0e0e0;
+    color: #333;
+  }
+  
+  .cancelButton:hover {
+    background-color: #ccc;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
