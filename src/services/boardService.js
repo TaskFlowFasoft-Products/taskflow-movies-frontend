@@ -9,10 +9,10 @@ export async function getBoards() {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data.boards;
+    return Array.isArray(response.data?.boards) ? response.data.boards : [];
   } catch (error) {
     console.error('Erro ao buscar quadros de filmes:', error);
-    throw error;
+    return [];
   }
 }
 
@@ -31,11 +31,11 @@ export async function getBoardTemplates() {
   }
 }
 
-export async function createBoard(template_id) {
+export async function createBoard(id) {
   try {
     const token = localStorage.getItem('access_token');
     const response = await axios.post(`${VITE_API_URL}/movies/boards`, 
-      { template_id },
+      { id },
       {
         headers: {
           Authorization: `Bearer ${token}`,

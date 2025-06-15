@@ -34,6 +34,8 @@ const BoardWorkspace = ({
   allowDeleteColumn = true,
   allowEditBoard = true,
   allowDeleteBoard = true,
+  onCoreCreateBoardClick = null,
+  refreshTrigger = 0,
 }) => {
   const [boards, setBoards] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -88,27 +90,34 @@ const BoardWorkspace = ({
 
   useEffect(() => {
     const fetchBoards = async () => {
-      const data = await boardService.getBoards();
-  
-      const normalizedBoards = data.map((board) => ({
-        ...board,
-        id: String(board.id),
-        columns: board.columns.map((column) => ({
-          ...column,
-          id: String(column.id),
-          cards: column.cards.map((card) => ({
-            ...card,
-            id: String(card.id),
-          })),
-        })),
-      }));
-  
-      setBoards(normalizedBoards);
-      setLoading(false);
+      try {
+        const data = await boardService.getBoards();
+    
+        console.log('Dados recebidos do boardService.getBoards():', data);
+
+        const normalizedBoards = Array.isArray(data)
+          ? data.filter(Boolean).map((board) => {
+              const validBoard = (typeof board === 'object' && board !== null) ? board : {};
+
+              return {
+                ...validBoard,
+                id: String(validBoard.id || ''),
+                columns: [],
+              };
+            }).filter(Boolean)
+          : [];
+    
+        setBoards(normalizedBoards);
+        setLoading(false);
+      } catch (error) {
+        console.error('Erro ao carregar quadros:', error);
+        setBoards([]);
+        setLoading(false);
+      }
     };
   
     fetchBoards();
-  }, [boardService]);
+  }, [boardService, refreshTrigger]);
   
 
   useEffect(() => {
@@ -666,7 +675,7 @@ const BoardWorkspace = ({
 
         <div className={styles.headerCenter}>
           {selectedBoardIndex !== null
-            ? boards[selectedBoardIndex]?.name
+            ? boards[selectedBoardIndex]?.title
             : "Nenhum quadro selecionado"}
         </div>
 
@@ -731,7 +740,7 @@ const BoardWorkspace = ({
   onClick={() => handleSelectBoard(index)}
 >
                     <span className={styles.pinIcon}>📌</span>
-                    {board.name}
+                    {board.title}
                   </div>
                   <div className={styles.boardMenu}>
                     <FaEllipsisH onClick={(e) => handleMenuToggle(index, e)} />
@@ -767,7 +776,7 @@ const BoardWorkspace = ({
             {allowAddBoard && (
               <button
                 className={styles.addBoardBtn}
-                onClick={() => setShowModal(true)}
+                onClick={onCoreCreateBoardClick || (() => setShowModal(true))}
               >
                 <FaPlus size={12} style={{ marginRight: "6px" }} />
                 Novo Quadro
