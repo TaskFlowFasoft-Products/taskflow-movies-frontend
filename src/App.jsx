@@ -1,13 +1,13 @@
 import { Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Suspense, lazy } from 'react';
-import './styles/App.css';
+import './core/styles/App.css';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Login = lazy(() => import('./pages/login'));
-const BoardWorkspace = lazy(() => import('./pages/boards/BoardWorkspace'));
-const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'));
+const Login = lazy(() => import('./core/pages/login'));
+const BoardWorkspace = lazy(() => import('./core/pages/boards/BoardWorkspace'));
+const ProtectedRoute = lazy(() => import('./core/components/ProtectedRoute'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
