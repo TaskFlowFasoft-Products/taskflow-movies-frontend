@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import BoardWorkspace from '../../core/pages/boards/BoardWorkspace';
 import { getBoards, createBoard as originalCreateBoard, deleteBoard, updateBoard } from '../../services/boardService';
+import { getBoardColumns, createColumn, updateColumn, deleteColumn } from '../../core/api/columnService';
+import { getTasks, createTask, updateTask, deleteTask } from '../../core/api/taskService';
 import TemplateSelector from './components/TemplateSelector';
 import styles from './components/styles/modal-overlay.module.css';
 import { toast } from 'react-toastify';
@@ -42,11 +44,27 @@ const MoviesBoardWorkspace = () => {
     updateBoard
   };
 
+  const columnService = {
+    getBoardColumns,
+    createColumn,
+    updateColumn,
+    deleteColumn,
+  };
+
+  const taskService = {
+    getTasks,
+    createTask,
+    updateTask,
+    deleteTask,
+  };
+
   return (
     <>
       <BoardWorkspace
         key={boardRefreshKey}
         boardService={boardService}
+        columnService={columnService}
+        taskService={taskService}
         allowAddBoard={true}
         onCoreCreateBoardClick={handleCoreCreateBoardClick}
         refreshTrigger={boardRefreshKey}

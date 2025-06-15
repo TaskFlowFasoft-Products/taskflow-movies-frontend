@@ -37,6 +37,7 @@ const BoardWorkspace = ({
   onCoreCreateBoardClick = null,
   refreshTrigger = 0,
 }) => {
+  console.log('BoardWorkspace received columnService:', columnService, 'taskService:', taskService); // Log de depuração
   const [boards, setBoards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -96,19 +97,49 @@ const BoardWorkspace = ({
         console.log('Dados recebidos do boardService.getBoards():', data);
 
         const normalizedBoards = Array.isArray(data)
-          ? data.filter(Boolean).map((board) => {
+          ? await Promise.all(data.filter(Boolean).map(async (board) => {
               const validBoard = (typeof board === 'object' && board !== null) ? board : {};
+              
+              let columnsWithTasks = [];
+              try {
+                // Buscar colunas e tasks para cada board
+                columnsWithTasks = await columnService.getBoardColumns(String(validBoard.id)); // Garante que o ID é string
+              } catch (columnError) {
+                console.error(`Erro ao carregar colunas para o quadro ${validBoard.id}:`, columnError);
+                // Em caso de erro, as colunas ficarão vazias para este quadro
+              }
 
               return {
                 ...validBoard,
                 id: String(validBoard.id || ''),
-                columns: [],
+                columns: columnsWithTasks, // Atribui as colunas e tasks pré-carregadas
               };
-            }).filter(Boolean)
+            }))
           : [];
     
+        console.log('normalizedBoards (com colunas e tasks):', normalizedBoards); // Log de depuração
+
         setBoards(normalizedBoards);
         setLoading(false);
+
+        // --- Nova Lógica: Selecionar o quadro mais recente após carregar --- 
+        if (normalizedBoards.length > 0) {
+          // Encontra o quadro com a data de criação mais recente
+          const latestBoard = normalizedBoards.reduce((prev, current) => {
+            return (new Date(prev.created_at) > new Date(current.created_at)) ? prev : current;
+          });
+
+          const latestBoardIndex = normalizedBoards.findIndex(b => b.id === latestBoard.id);
+          
+          // Apenas seleciona se nenhum quadro estiver selecionado ou se o quadro selecionado não for o mais recente
+          if (selectedBoardIndex === null || boards[selectedBoardIndex]?.id !== latestBoard.id) {
+              setSelectedBoardIndex(latestBoardIndex);
+          }
+        } else {
+            // Se não houver quadros, garante que nenhum quadro esteja selecionado
+            setSelectedBoardIndex(null);
+        }
+        // --- Fim da Nova Lógica ---
       } catch (error) {
         console.error('Erro ao carregar quadros:', error);
         setBoards([]);
@@ -600,10 +631,21 @@ const BoardWorkspace = ({
     setSelectedBoardIndex(index);
   
     const board = boards[index];
-    const columns = await columnService.getBoardColumns(board.id);
+    console.log('handleSelectBoard - Board selecionado:', board); // Log de depuração
 
-  
-    const normalizedColumns = columns.map((col) => ({
+    let columnsToUse = [];
+
+    // Verifica se as colunas já estão carregadas para este board
+    if (board.columns && board.columns.length > 0) {
+      console.log("Colunas já pré-carregadas para o board:", board.id);
+      columnsToUse = board.columns;
+    } else {
+      console.log("Buscando colunas para o board:", board.id);
+      // A função getBoardColumns já busca as tasks
+      columnsToUse = await columnService.getBoardColumns(board.id);
+    }
+
+    const normalizedColumns = columnsToUse.map((col) => ({
       ...col,
       id: String(col.id),
       cards: col.cards?.map((card) => ({
